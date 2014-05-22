@@ -8,7 +8,6 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -19,6 +18,7 @@ import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.Event;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.BonemealEvent;
 
@@ -28,7 +28,7 @@ public class ModularPots
 {
     public static final String MOD_ID = "modularpots";
     static final String MOD_NAME = "Modular Flower Pots";
-    static final String MOD_VERSION = "1.6.4.2";
+    static final String MOD_VERSION = "1.6.4.3";
     static final String SOURCE_PATH = "com.jaquadro.minecraft.modularpots.";
 
     public static CreativeTabs tabModularPots = new ModularPotsCreativeTab("modularPots");
@@ -159,8 +159,8 @@ public class ModularPots
     public void applyBonemeal (BonemealEvent event) {
         if (Block.blocksList[event.ID] == largePotPlantProxy) {
             LargePotPlantProxy proxyBlock = (LargePotPlantProxy) largePotPlantProxy;
-            if (!proxyBlock.applyBonemeal(event.world, event.X, event.Y, event.Z)
-                event.setResult(Result.ALLOW); // Stop further processing and consume bonemeal
+            if (proxyBlock.applyBonemeal(event.world, event.X, event.Y, event.Z))
+                event.setResult(Event.Result.ALLOW); // Stop further processing and consume bonemeal
         }
     }
 
