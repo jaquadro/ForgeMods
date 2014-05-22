@@ -1,5 +1,6 @@
 package com.jaquadro.minecraft.modularpots;
 
+import com.jaquadro.minecraft.modularpots.addon.PlantHandlerRegistry;
 import com.jaquadro.minecraft.modularpots.block.*;
 import com.jaquadro.minecraft.modularpots.creativetab.ModularPotsCreativeTab;
 import com.jaquadro.minecraft.modularpots.item.*;
@@ -58,6 +59,11 @@ public class ModularPots
 
     @SidedProxy(clientSide = SOURCE_PATH + "client.ClientProxy", serverSide = SOURCE_PATH + "CommonProxy")
     public static CommonProxy proxy;
+
+    @Mod.EventHandler
+    public void postInit (FMLPostInitializationEvent event) {
+        PlantHandlerRegistry.init();
+    }    
 
     @Mod.EventHandler
     public void preInit (FMLPreInitializationEvent event) {

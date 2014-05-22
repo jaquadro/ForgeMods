@@ -1,9 +1,11 @@
 package com.jaquadro.minecraft.modularpots.block;
 
 import com.jaquadro.minecraft.modularpots.ModularPots;
+import com.jaquadro.minecraft.modularpots.addon.PlantHandlerRegistry;
 import com.jaquadro.minecraft.modularpots.client.ClientProxy;
 import com.jaquadro.minecraft.modularpots.tileentity.TileEntityLargePot;
 import com.jaquadro.minecraft.modularpots.world.gen.feature.*;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -31,10 +33,6 @@ public class LargePotPlantProxy extends Block
     @SideOnly(Side.CLIENT)
     private Icon transpIcon;
 
-    // Scratch State
-    private int scratchX;
-    private int scratchY;
-    private int scratchZ;
     private boolean applyingBonemeal;
 
     public LargePotPlantProxy (int id) {
@@ -75,7 +73,7 @@ public class LargePotPlantProxy extends Block
     }
 
     @Override
-    public void addCollisionBoxesToList (World world, int x, int y, int z, AxisAlignedBB mask, List list, Entity colliding) {
+    public void addCollisionBoxesToList (World world, int x, int y, int z, AxisAlignedBB mask, @SuppressWarnings("rawtypes") List list, Entity colliding) {
         Block block = getItemBlock(world, x, y, z);
         if (block == null)
             super.addCollisionBoxesToList(world, x, y, z, mask, list, colliding);
@@ -122,17 +120,21 @@ public class LargePotPlantProxy extends Block
     }
 
     public boolean applyBonemeal (World world, int x, int y, int z) {
+
+        applyingBonemeal = true;
+        boolean didGrow = PlantHandlerRegistry.applyBonemeal(world, x, y, z);
+        applyingBonemeal = false;
+
+        if (didGrow) return true;
+
         Block block = getItemBlock(world, x, y, z);
         if (block != Block.sapling)
             return false;
-
+        
         TileEntityLargePot te = getAttachedPotEntity(world, x, y, z);
         int blockMeta = te.getFlowerPotData();
 
         applyingBonemeal = true;
-        scratchX = x;
-        scratchY = y;
-        scratchZ = z;
 
         world.setBlock(x, y, z, 0, 0, 4);
 
@@ -173,10 +175,7 @@ public class LargePotPlantProxy extends Block
     }
 
     private boolean isApplyingBonemealTo (int x, int y, int z) {
-        return applyingBonemeal
-            && scratchX == x
-            && scratchY == y
-            && scratchZ == z;
+        return applyingBonemeal;
     }
 
     @Override
