@@ -1,4 +1,28 @@
-*/build/**
-*/eclipse/**
-*/.gradle/**
+# mac stuff
+.DS_Store
+
+# gradle stuff
+build
+.gradle
+
+# intellij stuff
+.idea
+*.iml
+
+# eclipse stuff
+.classpath
+.project
+.settings
+eclipse
+bin
+*.launch
+
+# intellij stuff
+.idea
+*.iml
+
+# run configuration
+run
+
+# other
 */out/**
